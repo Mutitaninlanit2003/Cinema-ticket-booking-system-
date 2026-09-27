@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Cinema-Ticket-Booking-System",
+			"path": "../.."
+		},
+		{
+			"name": "Backend",
+			"path": "../../../Backend"
+		}
+	],
+	"settings": {}
+}

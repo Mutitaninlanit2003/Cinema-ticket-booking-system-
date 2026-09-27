@@ -1,0 +1,1080 @@
+basePath: /
+definitions:
+  models.AuditLog:
+    properties:
+      action:
+        type: string
+      audit_log_id:
+        type: string
+      created_at:
+        type: string
+      details:
+        type: string
+      id:
+        type: integer
+      resource:
+        type: string
+      resource_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - action
+    - details
+    - resource
+    - resource_id
+    - user_id
+    type: object
+  models.Booking:
+    properties:
+      booking_id:
+        type: string
+      id:
+        type: integer
+      seat_numbers:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      showtime_id:
+        type: string
+      status:
+        enum:
+        - pending
+        - confirmed
+        - cancelled
+        type: string
+      total_price:
+        type: number
+      user_id:
+        type: string
+    required:
+    - seat_numbers
+    - showtime_id
+    - status
+    - total_price
+    - user_id
+    type: object
+  models.Movie:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      duration:
+        minimum: 1
+        type: integer
+      genre:
+        items:
+          type: string
+        type: array
+      id:
+        type: integer
+      language:
+        type: string
+      movie_id:
+        type: string
+      poster_url:
+        type: string
+      rating:
+        type: string
+      release_date:
+        type: string
+      status:
+        enum:
+        - NOW_SHOWING
+        - COMING_SOON
+        - ENDED
+        type: string
+      subtitle:
+        type: string
+      title:
+        type: string
+      trailer_url:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - duration
+    - genre
+    - language
+    - rating
+    - release_date
+    - status
+    - title
+    type: object
+  models.Payment:
+    properties:
+      amount:
+        type: number
+      booking_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      method:
+        enum:
+        - cash
+        - credit_card
+        - promptpay
+        - transfer
+        type: string
+      payment_id:
+        type: string
+      status:
+        enum:
+        - pending
+        - paid
+        - failed
+        - refunded
+        type: string
+      transaction_ref:
+        maxLength: 20
+        minLength: 6
+        type: string
+      updated_at:
+        type: string
+    required:
+    - amount
+    - booking_id
+    - method
+    - status
+    type: object
+  models.Screen:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      screen_id:
+        type: string
+      theater_id:
+        type: string
+      total_seats:
+        minimum: 1
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - name
+    - theater_id
+    - total_seats
+    type: object
+  models.Seat:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      screen_id:
+        type: string
+      seat_id:
+        type: string
+      seat_number:
+        type: string
+      seat_type:
+        enum:
+        - standard
+        - premium
+        - vip
+        type: string
+      updated_at:
+        type: string
+    required:
+    - screen_id
+    - seat_number
+    - seat_type
+    type: object
+  models.Showtime:
+    properties:
+      created_at:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: integer
+      movie_id:
+        type: string
+      price:
+        type: number
+      screen_id:
+        type: string
+      show_date:
+        type: string
+      showtime_id:
+        type: string
+      start_time:
+        type: string
+      status:
+        enum:
+        - scheduled
+        - showing
+        - finished
+        - cancelled
+        type: string
+      theater_id:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - end_time
+    - movie_id
+    - price
+    - show_date
+    - start_time
+    - status
+    - theater_id
+    type: object
+  models.Theater:
+    properties:
+      address:
+        type: string
+      capacity:
+        minimum: 1
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      name:
+        type: string
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      theater_id:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - address
+    - capacity
+    - location
+    - name
+    - status
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      firebase_uid:
+        type: string
+      google_id:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      profile_image:
+        type: string
+      role:
+        enum:
+        - user
+        - admin
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    required:
+    - email
+    - name
+    - role
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Cinema Ticket Booking System API
+  title: Cinema Ticket Booking API
+  version: "1.0"
+paths:
+  /audit_logs:
+    get:
+      description: Retrieve all audit logs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AuditLog'
+            type: array
+      summary: Get all audit logs
+      tags:
+      - Audit Logs
+    post:
+      consumes:
+      - application/json
+      description: Create a new audit log
+      parameters:
+      - description: Audit Log
+        in: body
+        name: audit_log
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuditLog'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Audit Log
+      tags:
+      - Audit Logs
+  /audit_logs/{audit_log_id}:
+    delete:
+      description: Delete audit log by ID
+      parameters:
+      - description: Audit Log ID
+        in: path
+        name: audit_log_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete audit log
+      tags:
+      - Audit Logs
+    put:
+      consumes:
+      - application/json
+      description: Update audit log by ID
+      parameters:
+      - description: Audit Log ID
+        in: path
+        name: audit_log_id
+        required: true
+        type: string
+      - description: Audit Log
+        in: body
+        name: audit_log
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuditLog'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update audit log
+      tags:
+      - Audit Logs
+  /bookings:
+    get:
+      description: Retrieve all bookings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Booking'
+            type: array
+      summary: Get all bookings
+      tags:
+      - Bookings
+    post:
+      consumes:
+      - application/json
+      description: Create a new booking
+      parameters:
+      - description: Booking
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/models.Booking'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Booking
+      tags:
+      - Bookings
+  /bookings/{booking_id}:
+    delete:
+      description: Delete booking by ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete booking
+      tags:
+      - Bookings
+    put:
+      consumes:
+      - application/json
+      description: Update booking by ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_id
+        required: true
+        type: string
+      - description: Booking
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/models.Booking'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update booking
+      tags:
+      - Bookings
+  /movies:
+    get:
+      description: Retrieve all movies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Movie'
+            type: array
+      summary: Get Movies
+      tags:
+      - Movies
+    post:
+      consumes:
+      - application/json
+      description: Create new movie
+      parameters:
+      - description: Movie data
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/models.Movie'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Movie'
+      summary: Create movie
+      tags:
+      - Movies
+  /movies/{movie_id}:
+    delete:
+      description: Delete movie by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete movie
+      tags:
+      - Movies
+    put:
+      consumes:
+      - application/json
+      description: Update movie by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      - description: Movie
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/models.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update movie
+      tags:
+      - Movies
+  /payments:
+    get:
+      description: Retrieve all payments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Payment'
+            type: array
+      summary: Get all payments
+      tags:
+      - Payments
+    post:
+      consumes:
+      - application/json
+      description: Create a new payment
+      parameters:
+      - description: Payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Payment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Payment
+      tags:
+      - Payments
+  /payments/{payment_id}:
+    delete:
+      description: Delete payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: payment_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete payment
+      tags:
+      - Payments
+    put:
+      consumes:
+      - application/json
+      description: Update payment by ID
+      parameters:
+      - description: Payment ID
+        in: path
+        name: payment_id
+        required: true
+        type: string
+      - description: Payment
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Payment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update payment
+      tags:
+      - Payments
+  /screens:
+    get:
+      description: Retrieve all screens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Screen'
+            type: array
+      summary: Get all screens
+      tags:
+      - Screens
+    post:
+      consumes:
+      - application/json
+      description: Create a new screen
+      parameters:
+      - description: Screen
+        in: body
+        name: screen
+        required: true
+        schema:
+          $ref: '#/definitions/models.Screen'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Screen
+      tags:
+      - Screens
+  /screens/{screen_id}:
+    delete:
+      description: Delete screen by ID
+      parameters:
+      - description: Screen ID
+        in: path
+        name: screen_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete screen
+      tags:
+      - Screens
+    put:
+      consumes:
+      - application/json
+      description: Update screen by ID
+      parameters:
+      - description: Screen ID
+        in: path
+        name: screen_id
+        required: true
+        type: string
+      - description: Screen
+        in: body
+        name: screen
+        required: true
+        schema:
+          $ref: '#/definitions/models.Screen'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update screen
+      tags:
+      - Screens
+  /seats:
+    get:
+      description: Retrieve all seats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Seat'
+            type: array
+      summary: Get all seats
+      tags:
+      - Seats
+    post:
+      consumes:
+      - application/json
+      description: Create a new seat
+      parameters:
+      - description: Seat
+        in: body
+        name: seat
+        required: true
+        schema:
+          $ref: '#/definitions/models.Seat'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Seat
+      tags:
+      - Seats
+  /seats/{seat_id}:
+    delete:
+      description: Delete seat by ID
+      parameters:
+      - description: Seat ID
+        in: path
+        name: seat_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete seat
+      tags:
+      - Seats
+    put:
+      consumes:
+      - application/json
+      description: Update seat by ID
+      parameters:
+      - description: Seat ID
+        in: path
+        name: seat_id
+        required: true
+        type: string
+      - description: Seat
+        in: body
+        name: seat
+        required: true
+        schema:
+          $ref: '#/definitions/models.Seat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update seat
+      tags:
+      - Seats
+  /showtimes:
+    get:
+      description: Retrieve all showtimes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Showtime'
+            type: array
+      summary: Get all showtimes
+      tags:
+      - Showtimes
+    post:
+      consumes:
+      - application/json
+      description: Create a new showtime
+      parameters:
+      - description: Showtime
+        in: body
+        name: showtime
+        required: true
+        schema:
+          $ref: '#/definitions/models.Showtime'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Showtime
+      tags:
+      - Showtimes
+  /showtimes/{showtime_id}:
+    delete:
+      description: Delete showtime by ID
+      parameters:
+      - description: Showtime ID
+        in: path
+        name: showtime_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete showtime
+      tags:
+      - Showtimes
+    put:
+      consumes:
+      - application/json
+      description: Update showtime by ID
+      parameters:
+      - description: Showtime ID
+        in: path
+        name: showtime_id
+        required: true
+        type: string
+      - description: Showtime
+        in: body
+        name: showtime
+        required: true
+        schema:
+          $ref: '#/definitions/models.Showtime'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update showtime
+      tags:
+      - Showtimes
+  /theaters:
+    get:
+      description: Retrieve all theaters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Theater'
+            type: array
+      summary: Get all theaters
+      tags:
+      - Theaters
+    post:
+      consumes:
+      - application/json
+      description: Create a new theater
+      parameters:
+      - description: Theater
+        in: body
+        name: theater
+        required: true
+        schema:
+          $ref: '#/definitions/models.Theater'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create Theater
+      tags:
+      - Theaters
+  /theaters/{theater_id}:
+    delete:
+      description: Delete theater by ID
+      parameters:
+      - description: Theater ID
+        in: path
+        name: theater_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete theater
+      tags:
+      - Theaters
+    put:
+      consumes:
+      - application/json
+      description: Update theater by ID
+      parameters:
+      - description: Theater ID
+        in: path
+        name: theater_id
+        required: true
+        type: string
+      - description: Theater
+        in: body
+        name: theater
+        required: true
+        schema:
+          $ref: '#/definitions/models.Theater'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update theater
+      tags:
+      - Theaters
+  /users:
+    get:
+      description: Retrieve all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create User
+      tags:
+      - Users
+  /users/{user_id}:
+    delete:
+      description: Delete user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user
+      tags:
+      - Users
+swagger: "2.0"
